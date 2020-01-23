@@ -22,38 +22,34 @@ public class OrderService {
 		List<Pizza> pizzasToOrder = new ArrayList<>();
 		List<Pizza> finalOrder = null;
 		int slicesOrdered = 0;
-		int previousSlicesOrdered = 0;
-		
-		Collections.reverse(orderParameters.getPizzasAvailable());
-		
-		for (int x = 0; x < orderParameters.getPizzasAvailable().size(); x++ ) {
-		
-			for (Pizza p : orderParameters.getPizzasAvailable()) {
-				if (p.getSize() <= orderParameters.getMaximumNumberOfSlicesToOrder()
-						&& slicesOrdered + p.getSize() <= orderParameters.getMaximumNumberOfSlicesToOrder()) {
-					slicesOrdered = slicesOrdered + p.getSize();
-					pizzasToOrder.add(p);
+		int maximumPossibleSlicesOrdered = 0;
+
+		for (int x=orderParameters.getPizzasAvailable().size() - 1; x>1; x--) {
+
+			slicesOrdered = orderParameters.getPizzasAvailable().get(x).getSize();
+			pizzasToOrder.add(orderParameters.getPizzasAvailable().get(x));
+
+			for (int y = x - 1; y >= 0; y--) {
+
+				if (slicesOrdered + orderParameters.getPizzasAvailable().get(y).getSize() <= orderParameters
+						.getMaximumNumberOfSlicesToOrder()) {
+					slicesOrdered += orderParameters.getPizzasAvailable().get(y).getSize();
+					pizzasToOrder.add(orderParameters.getPizzasAvailable().get(y));
 				}
 			}
-			
-			if (slicesOrdered == orderParameters.getMaximumNumberOfSlicesToOrder()) {
-				break;
-			} else if (slicesOrdered > previousSlicesOrdered) {
-				previousSlicesOrdered = slicesOrdered;
-				finalOrder = new ArrayList<>(pizzasToOrder);				
+
+			if (slicesOrdered > maximumPossibleSlicesOrdered) {
+				finalOrder = new ArrayList<>(pizzasToOrder);
+				maximumPossibleSlicesOrdered = slicesOrdered;
 			}
 			
-			orderParameters.getPizzasAvailable().remove(orderParameters.getPizzasAvailable().size()-1);
-			
-			
+			pizzasToOrder.clear();
+
 		}
 		
-
 		Collections.reverse(finalOrder);
 
-		Order order = new Order(pizzasToOrder.size(), finalOrder);
-
-		return order;
+		return new Order(finalOrder.size(), finalOrder);
 	}
 
 }

@@ -15,19 +15,10 @@ public class Main {
 		OrderParameter op = null;
 		
 		try {
-			op = frs.readInputFile("b_small.in");
+			op = frs.readInputFile("e_also_big.in");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		/*
-		List<Pizza> pizzasAvailable = new ArrayList<Pizza>();
-		pizzasAvailable.add(new Pizza(0,2));
-		pizzasAvailable.add(new Pizza(1,5));
-		pizzasAvailable.add(new Pizza(2,6));
-		pizzasAvailable.add(new Pizza(3,8));
-		
-		OrderParameter orderParameters = new OrderParameter(17, pizzasAvailable);
-		*/
 		
 		OrderService orderService = new OrderService(op);
 		
