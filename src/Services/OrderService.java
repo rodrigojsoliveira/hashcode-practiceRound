@@ -57,7 +57,8 @@ public class OrderService {
 			rotate += 1;
 		}
 		
-		Collections.reverse(finalOrder);
+		//Collections.reverse(finalOrder);
+		Collections.sort(finalOrder);
 
 		return new Order(finalOrder.size(), finalOrder);
 	}

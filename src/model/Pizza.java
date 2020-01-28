@@ -1,6 +1,7 @@
 package model;
 
-public class Pizza {
+public class Pizza implements Comparable<Pizza>{
+	
 	private int type;
 	private int size;
 
@@ -25,4 +26,17 @@ public class Pizza {
 	public void setSize(int size) {
 		this.size = size;
 	}
+
+	@Override
+	public int compareTo(Pizza o) {
+		if (this.type == o.type) {
+			return 0;
+		} else if (this.type > o.type) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+
+	
 }
