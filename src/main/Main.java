@@ -2,28 +2,36 @@ package main;
 
 import java.io.FileNotFoundException;
 
-import Services.FileReadingService;
+import Services.FileIOService;
 import Services.OrderService;
+import model.Order;
 import model.OrderParameter;
 
 public class Main {
-	
+
 	public static void main(String[] args) {
-		
-		FileReadingService frs = new FileReadingService();
-		
+
+		FileIOService fio = new FileIOService();
+
 		OrderParameter op = null;
-		
+
 		try {
-			op = frs.readInputFile("e_also_big.in");
+			op = fio.readInputFile("d_quite_big.in");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+
 		OrderService orderService = new OrderService(op);
-		
-		System.out.println(orderService.prepareOrder().toString());
-		
+
+		Order order = orderService.prepareOrder();
+
+		System.out.println(order.toString());
+
+		try {
+			fio.writeToFile(order);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
