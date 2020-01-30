@@ -10,54 +10,46 @@ import model.Pizza;
 
 public class OrderService {
 
-	private OrderParameter orderParameters;
+	private final int MAX_SLICES;
+	private final List<Pizza> AVAILABLE_PIZZAS;
 
 	public OrderService(OrderParameter orderParameters) {
 		super();
-		this.orderParameters = orderParameters;
+		this.MAX_SLICES = orderParameters.getMaximumNumberOfSlicesToOrder();
+		this.AVAILABLE_PIZZAS = new ArrayList<>(orderParameters.getPizzasAvailable());
 	}
 
 	public Order prepareOrder() {
 
-		List<Pizza> pizzasToOrder = new ArrayList<>();
+		List<Pizza> pizzas = new ArrayList<>();
 		List<Pizza> finalOrder = null;
-		int slicesOrdered = 0;
-		int bestSliceOrder = 0;
+		int sum = MAX_SLICES;
+		int score = 0;
+		int bestScore = 0;
 		int rotate = 0;
 
-		while (rotate <= orderParameters.getPizzasAvailable().size()) {
-			
-			if (bestSliceOrder == orderParameters.getMaximumNumberOfSlicesToOrder()) {
-				break;
-			}
-			
-			for (int x=orderParameters.getPizzasAvailable().size() - 1; x > 0; x--) {
-	
-				slicesOrdered = orderParameters.getPizzasAvailable().get(x).getSize();
-				pizzasToOrder.add(orderParameters.getPizzasAvailable().get(x));
-	
-				for (int y = x - 1; y >= 0; y--) {
-	
-					if (slicesOrdered + orderParameters.getPizzasAvailable().get(y).getSize() <= orderParameters
-							.getMaximumNumberOfSlicesToOrder()) {
-						slicesOrdered += orderParameters.getPizzasAvailable().get(y).getSize();
-						pizzasToOrder.add(orderParameters.getPizzasAvailable().get(y));
-					}
+		while (rotate != AVAILABLE_PIZZAS.size() && sum != 0) {
+			sum = MAX_SLICES;
+			pizzas.clear();
+			score = 0;
+			for (int x = AVAILABLE_PIZZAS.size() - 1; x >= 0; x--) {
+				if (AVAILABLE_PIZZAS.get(x).getSize() <= sum) {
+					sum = sum - AVAILABLE_PIZZAS.get(x).getSize();
+					pizzas.add(AVAILABLE_PIZZAS.get(x));
+					score = score + AVAILABLE_PIZZAS.get(x).getSize();
 				}
-	
-				if (slicesOrdered > bestSliceOrder) {
-					finalOrder = new ArrayList<>(pizzasToOrder);
-					bestSliceOrder = slicesOrdered;
-				}
-				
-				pizzasToOrder.clear();
+				if (sum == 0)
+					break;
 			}
-			
-			Collections.rotate(orderParameters.getPizzasAvailable(), 1);
-			rotate += 1;
+			rotate = rotate + 1;
+			Collections.rotate(AVAILABLE_PIZZAS, 1);
+			if (score > bestScore) {
+				bestScore = score;
+				finalOrder = new ArrayList<>(pizzas);
+			}
 		}
-		
-		//Collections.reverse(finalOrder);
+
+		// Collections.reverse(finalOrder);
 		Collections.sort(finalOrder);
 
 		return new Order(finalOrder.size(), finalOrder);
