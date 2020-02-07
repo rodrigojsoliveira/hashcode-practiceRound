@@ -1,11 +1,10 @@
 package main;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import Services.FileIOService;
-import Services.OrderService;
-import model.Order;
-import model.OrderParameter;
 
 public class Main {
 
@@ -13,25 +12,24 @@ public class Main {
 
 		FileIOService fio = new FileIOService();
 
-		OrderParameter op = null;
-
 		try {
-			op = fio.readInputFile("d_quite_big.in");
+			fio.readInputFile("d_quite_big.in");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		Solver solver = new Solver();
 
-		OrderService orderService = new OrderService(op);
-
-		Order order = orderService.prepareOrder();
-
-		System.out.println(order.toString());
-
-		try {
-			fio.writeToFile(order);
-		} catch (Exception e) {
-			e.printStackTrace();
+		solver.createSolutionTable(fio.getPizzas(), fio.getSum());
+		
+		if (solver.hasSubset()) {
+			ArrayList<Integer> result = (ArrayList<Integer>) solver.getSubset();
+			Collections.sort(result);
+			for (int x : result) {
+				System.out.println(x + " ");
+			}
 		}
+	
 	}
 
 }
