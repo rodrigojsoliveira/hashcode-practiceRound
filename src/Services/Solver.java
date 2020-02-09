@@ -72,7 +72,7 @@ public class Solver {
 			for (int x = set.length - 1; x >= 0; x--) {
 				if (set[x] <= sum) {
 					sum = sum - set[x];
-					result.add(set[x]);
+					result.add(x);
 					score = score + set[x];
 				}
 				if (sum == 0)

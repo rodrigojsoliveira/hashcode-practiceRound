@@ -24,7 +24,7 @@ public class Main implements Runnable {
 		FileIOService fio = new FileIOService();
 
 		try {
-			fio.readInputFile("e_also_big.in");
+			fio.readInputFile("a_example.in");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
