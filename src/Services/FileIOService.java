@@ -1,7 +1,14 @@
 package Services;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.List;
 import java.util.Scanner;
 
 public class FileIOService {
@@ -49,14 +56,19 @@ public class FileIOService {
 
 	}
 
-//	public void writeToFile(Order order) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-//
-//		String newName = this.fileName.replace(".in", ".out");
-//
-//		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newName), "utf-8"));
-//		writer.write(order.toText());
-//		writer.close();
-//
-//	}
+	public void writeToFile(List<Integer> result) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+
+		String newName = this.fileName.replace(".in", ".out");
+		
+		String textContent = result.size() + "\n";
+		for (int r : result) {
+			textContent = textContent + r + " ";
+		}
+
+		Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newName), "utf-8"));
+		writer.write(textContent);
+		writer.close();
+
+	}
 
 }

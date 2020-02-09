@@ -1,73 +1,68 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Solver {
-
-	private int[] pizzas;
-	private int sum;
-	private Map<String, Boolean> lookup = new HashMap<>();
-
-	public void createSolutionTable(int[] pizzas, int sum) {
-
-		this.pizzas = pizzas;
-		this.sum = sum;
-
-		for (int row = 0; row < pizzas.length; row++) {
-			String key = row + "0";
-			this.lookup.put(key, true);
-		}
-
-		for (int column = 1; column <= sum; column++) {
-			String key = "0" + column;
-			this.lookup.put(key, false);
-		}
-
-		for (int row = 1; row <= pizzas.length; row++) {
-			for (int column = 1; column <= sum; column++) {
-				if (pizzas[row - 1] > column) {
-					this.lookup.put(Integer.toString(row) + Integer.toString(column),
-							this.lookup.get(Integer.toString(row - 1) + Integer.toString(column)));
-				} else {
-					if (this.lookup.get(Integer.toString((row - 1)) + Integer.toString(column))) {
-						this.lookup.put(Integer.toString(row) + Integer.toString(column),
-								this.lookup.get(Integer.toString(row - 1) + Integer.toString(column)));
-					} else {
-						this.lookup.put(Integer.toString(row) + Integer.toString(column),
-								this.lookup.get(Integer.toString(row - 1) + Integer.toString(column-pizzas[row-1])));
-					}
-				}
-			}
-		}
+	
+	List<Integer> result = new ArrayList<Integer>();
+	int elementSum = 0;
+	
+	public List<Integer> getResult() {
+		return this.result;
 	}
+	
+	public int getElementSum() {
+		return this.elementSum;
+	}
+	
+	// Return true if there exists a subarray of array[0..n] with given sum
+	public boolean subsetSum(int[] A, int n, int sum,
+									Map<String, Boolean> lookup) {
 
-	public boolean hasSubset() {
 		
-		if (this.lookup.get(Integer.toString(this.pizzas.length) + Integer.toString(this.sum))) {
+		// return true if sum becomes 0 (subset found)
+		if (sum == 0) {
 			return true;
-		} else {
+		}
+
+		// base case: no items left or sum becomes negative
+		if (n < 0 || sum < 0) {
 			return false;
 		}
-	}
-
-	public List<Integer> getSubset() {
-		int row = this.pizzas.length;
-		int column = this.sum;
-		List<Integer> solution = new ArrayList<Integer>();
-
-		while (row > 0 || column > 0) {
-			if (this.lookup.get(Integer.toString(row) + Integer.toString(column)) == this.lookup.get(Integer.toString(row-1) + Integer.toString(column))) {
-				row = row - 1;
-			} else {
-				solution.add(this.pizzas[row - 1]);
-				column = column - this.pizzas[row - 1];
-				row = row - 1;
+		
+		// construct an unique map key from dynamic elements of the input
+		String key = n + "|" + sum;
+				
+		
+		// if sub-problem is seen for the first time, solve it and
+		// store its result in a map
+		if (!lookup.containsKey(key))
+		{
+			// Case 1. include current item in the subset (A[n]) & recur
+			// for remaining items (n - 1) with decreased sum (sum - A[n])
+			boolean include = subsetSum(A, n - 1, sum - A[n], lookup);
+			
+			if (include) {
+				this.result.add(n);
+				this.elementSum += A[n];
 			}
-		}
-		return solution;
-	}
 
+			// Case 2. exclude current item n from subset and recur for
+			// remaining items (n - 1)
+			boolean exclude=false;
+			if (!include) {
+				exclude = subsetSum(A, n - 1, sum, lookup);
+			}
+			// assign true if we get subset by including or excluding
+			// current item
+			lookup.put(key, include || exclude);
+			
+		}
+
+		// return solution to current sub-problem
+		return lookup.get(key);
+	}
 }
+

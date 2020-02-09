@@ -5,7 +5,6 @@
 package main;
 
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ public class Main implements Runnable {
 
 	public static void main(String[] args) throws Exception {
 
-		new Thread(null, new Main(), "Main").start();
+		new Thread(null, new Main(), "Main", 1 << 26).start();
 
 	}
 
@@ -24,23 +23,21 @@ public class Main implements Runnable {
 		FileIOService fio = new FileIOService();
 
 		try {
-			fio.readInputFile("b_small.in");
+			fio.readInputFile("d_quite_big.in");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		Solver2 solver2 = new Solver2();
+		Solver solver2 = new Solver();
 		Map<String, Boolean> lookup = new HashMap<>();
 
-		System.out.println(solver2.subsetSum(fio.getPizzas(), fio.getPizzas().length - 1, fio.getSum(), lookup));
-
-		Collections.sort(solver2.getResultList());
-		String s = "";
-		
-		for (Integer a : solver2.getResultList()) {
-			s = s + Integer.toString(a) + " ";
+		if (solver2.subsetSum(fio.getPizzas(), fio.getPizzas().length - 1, fio.getSum(), lookup)) {
+			try {
+				fio.writeToFile(solver2.getResult());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		System.out.println(s);
 
 	}
 
